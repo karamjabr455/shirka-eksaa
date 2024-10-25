@@ -3,6 +3,10 @@ import React, { useState, useEffect } from 'react';
 export default function VerificationPage() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutes in seconds
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode === 'true'; // تحويل النص إلى Boolean
+  });
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -37,9 +41,14 @@ export default function VerificationPage() {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  // تحديث localStorage عند تغيير الوضع الداكن
+  useEffect(() => {
+    localStorage.setItem('darkMode', isDarkMode);
+  }, [isDarkMode]);
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <div className="h-16 bg-teal-600"></div>
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'} flex flex-col`}>
+      <div className={`h-16 ${isDarkMode ? 'bg-gray-800' : 'bg-teal-600'}`}></div>
       <div className="flex-grow flex flex-col items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="mb-8 flex justify-center">
@@ -71,7 +80,7 @@ export default function VerificationPage() {
                   id={`code-${index}`}
                   type="text"
                   maxLength={1}
-                  className="w-12 h-12 text-center text-2xl border-2 border-gray-300 rounded focus:border-teal-500 focus:outline-none"
+                  className={`w-12 h-12 text-center text-2xl border-2 rounded focus:outline-none ${isDarkMode ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300 text-black'} focus:border-teal-500`}
                   value={digit}
                   onChange={(e) => handleCodeChange(index, e.target.value)}
                 />
@@ -85,7 +94,7 @@ export default function VerificationPage() {
             </p>
             <button
               type="submit"
-              className="w-full bg-green-500 text-white py-3 rounded-full font-bold hover:bg-green-600 transition duration-300"
+              className={`w-full py-3 rounded-full font-bold transition duration-300 ${isDarkMode ? 'bg-green-500 text-white' : 'bg-green-500 text-white'} hover:bg-green-600`}
             >
               VERIFY AND CONTINUE
             </button>

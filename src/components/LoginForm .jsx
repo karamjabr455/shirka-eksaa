@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom'; 
 
-
 import backgroundImage1 from '../picture/Rectangle 1.png';
 import backgroundImage2 from '../picture/Rectangle 2 (2).png';
 import backgroundImage3 from '../picture/Rectangle 3.png';
@@ -18,9 +17,12 @@ function Login() {
   });
 
   const [currentBackground, setCurrentBackground] = useState(backgroundImage1);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode === 'true'; // تحويل النص إلى Boolean
+  });
 
   // Use useNavigate for routing
-
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -41,8 +43,8 @@ function Login() {
     navigate('/landingpage');
   };
 
-// To change the background every 5 seconds
-useEffect(() => {
+  // To change the background every 5 seconds
+  useEffect(() => {
     const backgrounds = [
       backgroundImage1,
       backgroundImage2,
@@ -59,9 +61,17 @@ useEffect(() => {
     return () => clearInterval(interval); // Clean up the timer when the component is cancelled
   }, []);
 
+  
+  useEffect(() => {
+    localStorage.setItem('darkMode', isDarkMode);
+  }, [isDarkMode]);
+
+  const handleDarkModeToggle = (isDark) => {
+    setIsDarkMode(isDark);
+  };
+
   return (
-    <div className="flex flex-col h-screen relative">
-     
+    <div className={`flex flex-col h-screen relative ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
       <div
         className="absolute top-0 left-0 w-full h-16"
         style={{
@@ -70,7 +80,7 @@ useEffect(() => {
         }}
       ></div>
       <div className="flex flex-1">
-        <div className="w-full md:w-1/2 bg-white flex items-center justify-center p-8">
+        <div className={`w-full md:w-1/2 flex items-center justify-center p-8 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <div className="w-full max-w-md">
             <div className="text-center mb-8">
               <img src={logoImage} alt="Company Logo" className="w-16 h-16 mx-auto mb-4" />
@@ -87,7 +97,7 @@ useEffect(() => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className={`w-full pl-10 pr-3 py-2 rounded-md border ${isDarkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-white'} focus:outline-none focus:ring-2 focus:ring-green-500`}
                 />
               </div>
               <div className="relative">
@@ -99,7 +109,7 @@ useEffect(() => {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
-                  className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className={`w-full pl-10 pr-3 py-2 rounded-md border ${isDarkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-white'} focus:outline-none focus:ring-2 focus:ring-green-500`}
                 />
               </div>
               <div className="flex justify-between text-sm">
@@ -118,7 +128,6 @@ useEffect(() => {
           </div>
         </div>
 
-        
         <div className="hidden md:block md:w-1/2">
           <img
             src={currentBackground}
